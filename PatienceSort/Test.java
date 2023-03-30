@@ -1,0 +1,50 @@
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class Test {
+
+    private static final Path dataPath = Paths.get("src/" +
+            "data.txt");
+
+    private static final Path resultsPath = Paths.get("src/" +
+            "result.txt");
+
+    private static final String VALUES_SEPARATOR = "; ";
+
+    public static void getPatienceSortingResults() throws IOException {
+        PrintWriter printWriter = new PrintWriter(resultsPath.toAbsolutePath().toFile());
+        Scanner scanner = new Scanner(dataPath.toAbsolutePath().toFile());
+
+        long end, start;
+
+        while (scanner.hasNext()) {
+            String line = scanner.nextLine();
+            if (line.contains("Set")) line = scanner.nextLine();
+            int[] data = Arrays
+                    .stream(line.split(VALUES_SEPARATOR))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+
+            start = System.nanoTime();
+            int iterationCount = PatienceSort.patienceSort(data);
+            end = System.nanoTime();
+            printWriter.println((end - start) +" - " + iterationCount);
+        }
+        printWriter.close();
+        scanner.close();
+    }
+
+    public static void main(String[] args) {
+        try {
+            getPatienceSortingResults();
+        } catch (IOException exception) {
+            throw new RuntimeException("Failed to open file", exception);
+        }
+    }
+
+
+}
